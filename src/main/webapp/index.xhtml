@@ -1,8 +1,20 @@
-<f:view xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html" xmlns:prime="http://primefaces.org/ui"
-  >
-  <h:head />
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+  <h:head>
+    <!--<link href="../../css/jansen.css" rel="stylesheet" type="text/css" />-->
+    <link href="css/jansen.css" rel="stylesheet" type="text/css" />
+          </h:head>
+
+
+
   <h:body>
+
     <h:form prependId="false">
       	This file illustrates PrimeFaces bug 6184 (see https://code.google.com/p/primefaces/issues/detail?id=6184).<br />
       	<br />
@@ -17,12 +29,12 @@
       <h:panelGrid columns="3">
       	
       	
-        <prime:outputLabel for="@next" value="small number (less than 10)" />
-        <prime:inputText value="#{backingJsfBean.smallNumber}" required="true" label="small number" id="smallNumberID"/>
-        <prime:message for="@previous" />
-        <prime:commandButton validateClient="true" value="validate" action="#{backingJsfBean.showErrors}"
+        <p:outputLabel for="@next" value="small number (less than 10)" />
+        <p:inputText value="#{backingJsfBean.smallNumber}" required="true" label="small number" id="smallNumberID"/>
+        <p:message for="@previous" />
+        <p:commandButton validateClient="true" value="validate!" action="#{backingJsfBean.showErrors}"
           update="@parent:@parent" />
       </h:panelGrid>
     </h:form>
   </h:body>
-</f:view>
+</html>

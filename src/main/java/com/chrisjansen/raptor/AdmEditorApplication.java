@@ -36,5 +36,7 @@ public class AdmEditorApplication  extends SpringBootServletInitializer implemen
 	@Override
 	public void setServletContext(ServletContext servletContext) {
 		servletContext.setInitParameter("com.sun.faces.forceLoadConfiguration", Boolean.TRUE.toString());
+		servletContext.setInitParameter("javax.faces.PROJECT_STAGE", "Development");
+		servletContext.setInitParameter("primefaces.THEME", "bootstrap");
 	}
 }
