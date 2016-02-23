@@ -2,13 +2,7 @@ package com.chrisjansen.raptor.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -26,8 +20,9 @@ public class PxDatasetProps implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @NotNull
     @Column(name = "prop_id")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "px_dataset_props_seq_generator")
+    @SequenceGenerator(name="px_dataset_props_seq_generator", sequenceName = "px_dataset_props_seq", allocationSize = 20)
     private Integer propId;
     @Basic(optional = false)
     @NotNull

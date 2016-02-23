@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+  <!--<link href="../../css/jansen.css" rel="stylesheet" type="text/css" />-->
+  <link href="css/jansen.css" rel="stylesheet" type="text/css" />
+</h:head>
+
+<h:body>
+
+  <h:form prependId="false" id="form">
+
+
+    <!--<p:graphicImage url="/images/rockLizard.jpeg"/>-->
+
+
+    <p:growl id="growl" sticky="false" showDetail="false"/>
+    <p:messages id="msgs" autoUpdate="true" closable="true" />
+
+    <p:wizard>
+      <p:tab id="findRecords" title="Find PxAttributes">
+        <p:dataTable id="pxAttrDataTable" var="pxAttr" value="#{pxAttributeController.pxAttributeList}" widgetVar="pxAttrTable"
+                     emptyMessage="No pxAttribute records found with given criteria" filteredValue="#{pxAttributeController.filteredPxAttributeList}"
+                     selection="#{pxAttributeController.selectedPxAttributes}"
+                     rows="10"
+                     rowKey="#{pxAttr.id}"
+                     paginator="true"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     rowsPerPageTemplate="5,10,15">
+          PxAttribute
+          <f:facet name="header">
+            <p:outputPanel>
+              <h:outputText value="Search all fields:" />
+              <p:inputText id="globalFilter" onkeyup="PF('pxAttrTable').filter()" style="width:180px" placeholder="Enter keyword"/>
+            </p:outputPanel>
+          </f:facet>
+
+          <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+
+          <p:column filterBy="#{pxAttr.id}" headerText="Id"  filterMatchMode="contains" sortBy="#{pxAttr.id}">
+            <h:outputText value="#{pxAttr.id}" />
+          </p:column>
+          <p:column filterBy="#{pxAttr.dataSet}" headerText="DataSet" filterMatchMode="contains" sortBy="#{pxAttr.dataSet}">
+            <h:outputText value="#{pxAttr.dataSet}" />
+          </p:column>
+          <p:column filterBy="#{pxAttr.displayName}" headerText="DisplayName"  filterMatchMode="contains" sortBy="#{pxAttr.displayName}">
+            <h:outputText value="#{pxAttr.displayName}" />
+          </p:column>
+          <p:column filterBy="#{pxAttr.sourceName}" headerText="SourceName"  filterMatchMode="contains" sortBy="#{pxAttr.sourceName}">
+            <h:outputText value="#{pxAttr.sourceName}" />
+          </p:column>
+          <p:column filterBy="#{pxAttr.type}" headerText="Type"  filterMatchMode="contains" sortBy="#{pxAttr.type}">
+            <h:outputText value="#{pxAttr.type}" />
+          </p:column>
+          <f:facet name="footer">
+            <p:commandButton  value="Refresh attributes" icon="ui-icon-refresh" actionListener="#{pxAttributeController.refreshList}" update=":form:pxAttrDataTable"/>
+          </f:facet>
+        </p:dataTable>
+      </p:tab>
+
+
+
+
+      <p:tab id="editRecords" title="Edit PxAttributes">
+
+
+
+        <p:panel id="newDataSet" header="Please enter a new DataSet name">
+          <h:panelGrid columns="2" cellpadding="5">
+            <p:outputLabel for="newDataSetName" value="New DataSet name:" />
+            <p:inputText id="newDataSetName" value="#{pxAttributeController.newDataSetName}" label="Enter new value">
+              <!--<f:validateRequired/>-->
+            </p:inputText>
+          </h:panelGrid>
+          <p:commandButton value="Apply Value" update=":form:selectedPxAttrDataTable"/>
+        </p:panel>
+
+
+
+
+
+
+
+
+        <p:dataTable id="selectedPxAttrDataTable" var="selectedPxAttribute" value="#{pxAttributeController.selectedPxAttributes}"
+                     emptyMessage="No pxAttribute records found with given criteria" editable="true" editMode="cell"
+                     rowKey="#{selectedPxAttribute.displayName}-#{selectedPxAttribute.sourceName}" selection="#{pxAttributeController.selectedPxAttributesForSoftDelete}">
+
+          <f:facet name="header">
+            PxAttibute data to be persisted
+          </f:facet>
+          <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+
+          <p:column  headerText="ID" >
+            <h:outputText value="#{selectedPxAttribute.id}" style="width:96%"/>
+          </p:column>
+          <p:column  headerText="New dataset" >
+            <h:outputText value="#{pxAttributeController.newDataSetName}" style="width:96%"/>
+          </p:column>
+
+
+          <!--<p:column  headerText="DataSet" >-->
+          <!--<p:cellEditor>-->
+          <!--<f:facet name="output"><h:outputText value="#{pxAttributeController.newDataSetName}" /></f:facet>-->
+          <!--<f:facet name="input"><p:inputText value="#{pxAttributeController.newDataSetName}" style="width:96%" label="DataSet"/></f:facet>-->
+          <!--</p:cellEditor>-->
+          <!--</p:column>-->
+          <p:column  headerText="DisplayName">
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{selectedPxAttribute.displayName}" /></f:facet>
+              <f:facet name="input"><p:inputText value="#{selectedPxAttribute.displayName}" style="width:96%" label="displayName"/></f:facet>
+            </p:cellEditor>
+          </p:column>
+          <p:column  headerText="SourceName" >
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{selectedPxAttribute.sourceName}" /></f:facet>
+              <f:facet name="input"><p:inputText value="#{selectedPxAttribute.sourceName}" style="width:96%" label="sourceName"/></f:facet>
+            </p:cellEditor>
+          </p:column>
+          <p:column  headerText="Type" >
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{selectedPxAttribute.type}" /></f:facet>
+              <f:facet name="input">
+                <h:selectOneMenu value="#{selectedPxAttribute.type}" style="width:100%">
+                  <f:selectItems value="#{pxAttributeController.types}" var="type" itemLabel="#{type}" itemValue="#{type}" />
+                </h:selectOneMenu>
+              </f:facet>
+            </p:cellEditor>
+          </p:column>
+          <f:facet name="footer">
+            <p:commandButton id="createButton" icon="ui-icon-plus"   value="Create new row" oncomplete="PF('createNewPxAttrDialogBox').show()"/>
+            <p:commandButton  value="Delete selected" icon="ui-icon-close" actionListener="#{pxAttributeController.doSoftDelete}" update="growl :form:selectedPxAttrDataTable"/>
+            <p:commandButton  value="Save attributes" icon="ui-icon-disk" actionListener="#{pxAttributeController.saveListAsNew}" update="growl :form:selectedPxAttrDataTable"/>
+          </f:facet>
+        </p:dataTable>
+      </p:tab>
+
+    </p:wizard>
+
+    <p:dialog header="Create new Px Attribute" widgetVar="createNewPxAttrDialogBox" showEffect="fade" hideEffect="fade" resizable="false" modal="true">
+      <p:panel id="createPxAttribute" header="Create a new DataSet row.  Go ahead.  I dare you."  >
+        <p:messages id="msgs2" autoUpdate="true" closable="true" />
+        <h:panelGrid columns="3" cellpadding="5">
+          <p:outputLabel for="displayName" value="Display name:" />
+          <p:inputText id="displayName" value="#{pxAttributeController.newPxAttribute.displayName}"/>
+          <p:message for="displayName" display="icon"/>
+
+          <p:outputLabel for="sourceName" value="Source name:" />
+          <p:inputText id="sourceName" value="#{pxAttributeController.newPxAttribute.sourceName}"/>
+          <p:message for="sourceName" display="icon"/>
+
+          <p:outputLabel for="format" value="Format:" />
+          <p:inputText id="format" value="#{pxAttributeController.newPxAttribute.format}"/>
+          <p:message for="format" display="icon"/>
+
+          <p:outputLabel for="colSize" value="Col size:" />
+          <p:inputText id="colSize" value="#{pxAttributeController.newPxAttribute.colSize}"/>
+          <p:message for="colSize" display="icon"/>
+
+          <p:outputLabel for="groupAction" value="Group action:" />
+          <p:inputText id="groupAction" value="#{pxAttributeController.newPxAttribute.groupAction}"/>
+          <p:message for="groupAction" display="icon"/>
+
+          <p:outputLabel for="type" value="Data type:" />
+          <p:selectOneMenu id="type" value="#{pxAttributeController.newPxAttribute.type}" style="width:125px" >
+            <f:selectItems value="#{pxAttributeController.types}"/>
+          </p:selectOneMenu>
+          <p:message for="type" display="icon"/>
+
+          <p:outputLabel for="colVisible" value="Column visible:" />
+          <p:selectOneMenu id="colVisible" value="#{pxAttributeController.newPxAttribute.colVisible}" style="width:125px">
+            <f:selectItem itemLabel="true" itemValue="true" />
+            <f:selectItem itemLabel="false" itemValue="false" />
+          </p:selectOneMenu>
+          <p:message for="colVisible" display="icon"/>
+
+          <p:outputLabel for="pxAttrName" value="Px Attribute name:" />
+          <p:inputText id="pxAttrName" value="#{pxAttributeController.newPxAttribute.pxAttrName}"/>
+          <p:message for="pxAttrName" display="icon"/>
+
+          <p:outputLabel for="historic" value="Historic:" />
+          <p:selectOneMenu id="historic" value="#{pxAttributeController.newPxAttribute.historic}" style="width:125px">
+            <f:selectItem itemLabel="true" itemValue="true" />
+            <f:selectItem itemLabel="false" itemValue="false" />
+          </p:selectOneMenu>
+          <p:message for="historic" display="icon"/>
+
+        </h:panelGrid>
+
+        <p:commandButton value="Add record to table" icon="ui-icon-check"  update=":form:growl :form:selectedPxAttrDataTable"
+                         actionListener="#{pxAttributeController.addToSelectedAttributeList}"/>
+        <p:commandButton value="Cancel" onclick="createNewPxAttrDialogBox.hide()"/>
+      </p:panel>
+    </p:dialog>
+
+  </h:form>
+</h:body>
+</html>

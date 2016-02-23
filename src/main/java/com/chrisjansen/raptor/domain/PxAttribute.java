@@ -3,13 +3,8 @@ package com.chrisjansen.raptor.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import java.util.Objects;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -26,14 +21,15 @@ public class PxAttribute implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "px_attribute_seq_generator")
+    @SequenceGenerator(name="px_attribute_seq_generator", sequenceName = "px_attribute_seq", allocationSize = 20)
     @Basic(optional = false)
-    @NotNull
     @Column(name = "id")
     private Integer id;
     @Size(max = 64)
     @Column(name = "data_set")
     private String dataSet;
-    @Size(max = 64)
+    @Size(max = 64, min = 1)
     @Column(name = "display_name")
     private String displayName;
     @Size(max = 256)
@@ -178,23 +174,24 @@ public class PxAttribute implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PxAttribute)) return false;
+        PxAttribute that = (PxAttribute) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(dataSet, that.dataSet) &&
+                Objects.equals(displayName, that.displayName) &&
+                Objects.equals(sourceName, that.sourceName) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(format, that.format) &&
+                Objects.equals(colVisible, that.colVisible) &&
+                Objects.equals(pxAttrName, that.pxAttrName) &&
+                Objects.equals(historic, that.historic);
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PxAttribute)) {
-            return false;
-        }
-        PxAttribute other = (PxAttribute) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(id, dataSet, displayName, sourceName, type, format, colVisible, pxAttrName, historic);
     }
 
     @Override

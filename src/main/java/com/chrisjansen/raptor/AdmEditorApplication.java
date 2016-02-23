@@ -1,6 +1,5 @@
 package com.chrisjansen.raptor;
 
-import com.chrisjansen.raptor.config.Initializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -22,7 +21,7 @@ public class AdmEditorApplication  extends SpringBootServletInitializer implemen
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(new Class[] { AdmEditorApplication.class, Initializer.class});
+		return application.sources(new Class[] { AdmEditorApplication.class});
 	}
 
 	@Bean
@@ -38,5 +37,9 @@ public class AdmEditorApplication  extends SpringBootServletInitializer implemen
 		servletContext.setInitParameter("com.sun.faces.forceLoadConfiguration", Boolean.TRUE.toString());
 		servletContext.setInitParameter("javax.faces.PROJECT_STAGE", "Development");
 		servletContext.setInitParameter("primefaces.THEME", "bootstrap");
+		servletContext.setInitParameter("primefaces.CLIENT_SIDE_VALIDATION", "true");
+		servletContext.setInitParameter("primefaces.TRANSFORM_METADATA", "true");
+		//the following sets @NotNull fields required astricks to display in the UI. See:http://forum.primefaces.org/viewtopic.php?f=3&t=38880
+		servletContext.setInitParameter("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
 	}
 }

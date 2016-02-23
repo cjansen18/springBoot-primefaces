@@ -24,8 +24,18 @@ public class PxAttributeTest {
     private PxAttributeRepository pxAttributeRepository;
 
     @Test
-    public void testPxAttribute(){
+    public void testPxAttributeFindAll(){
         Iterable<PxAttribute> pxAttributes = pxAttributeRepository.findAll();
         assertThat(pxAttributes).isNotNull();
+    }
+
+    @Test
+    public void createNewPxAttributeRecord(){
+        PxAttribute pxAttribute=new PxAttribute();
+        pxAttribute.setDataSet("ChrisJansen");
+
+        pxAttribute=pxAttributeRepository.save(pxAttribute);
+        assertThat(pxAttribute.getId()).isNotNull();
+
     }
 }

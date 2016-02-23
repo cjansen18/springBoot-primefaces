@@ -1,7 +1,9 @@
 package com.chrisjansen.raptor;
 
 import com.chrisjansen.raptor.domain.PxAttribute;
+import com.chrisjansen.raptor.domain.PxDatasetProps;
 import com.chrisjansen.raptor.repo.PxAttributeRepository;
+import com.chrisjansen.raptor.repo.PxDatasetPropsRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -21,11 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PxDatasetPropsTest {
 
     @Resource
-    private PxAttributeRepository pxAttributeRepository;
+    private PxDatasetPropsRepository pxDatasetPropsRepository;
 
     @Test
-    public void findPxAttributeRecords(){
-       Iterable<PxAttribute> pxAttributes=pxAttributeRepository.findAll();
-        assertThat(pxAttributes).isNotEmpty();
+    public void findDatasetRecordsRecordsFindAll(){
+       Iterable<PxDatasetProps> pxDatasetPropses=pxDatasetPropsRepository.findAll();
+        assertThat(pxDatasetPropses).isNotEmpty();
     }
 }
