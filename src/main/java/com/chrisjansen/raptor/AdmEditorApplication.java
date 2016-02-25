@@ -39,7 +39,8 @@ public class AdmEditorApplication  extends SpringBootServletInitializer implemen
 		servletContext.setInitParameter("primefaces.THEME", "bootstrap");
 		servletContext.setInitParameter("primefaces.CLIENT_SIDE_VALIDATION", "true");
 		servletContext.setInitParameter("primefaces.TRANSFORM_METADATA", "true");
-		//the following sets @NotNull fields required astricks to display in the UI. See:http://forum.primefaces.org/viewtopic.php?f=3&t=38880
+		//1. The following sets @NotNull fields required astricks to display in the UI. See:http://forum.primefaces.org/viewtopic.php?f=3&t=38880
+		//2. This impacts data validation.  See PxDatasetProps:propertyName
 		servletContext.setInitParameter("javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL", "true");
 	}
 }

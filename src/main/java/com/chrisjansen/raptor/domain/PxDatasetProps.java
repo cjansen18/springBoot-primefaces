@@ -29,14 +29,17 @@ public class PxDatasetProps implements Serializable {
     @Size(min = 1, max = 64)
     @Column(name = "data_set")
     private String dataSet;
+
     @Basic(optional = false)
-    @NotNull
+    //@NotNull(message = "This propertyName may not be null")
     @Size(min = 1, max = 80)
     @Column(name = "property_name")
+
     private String propertyName;
     @Size(max = 5000)
     @Column(name = "property_value")
     private String propertyValue;
+
     @Column(name = "updateTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateTime;

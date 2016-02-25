@@ -117,7 +117,7 @@ public class PxDatasetPropsController implements Serializable{
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
-    public void addToSelectedAttributeList(ActionEvent actionEvent){
+    public void addToSelectedDatasetPropsTable(ActionEvent actionEvent){
         selectedPxDatasetProps.add(newPxDatasetProps);
 
         newPxDatasetProps=new PxDatasetProps();
@@ -155,6 +155,7 @@ public class PxDatasetPropsController implements Serializable{
     }
 
     public void setNewDataSetName(String newDataSetName) {
+
         this.newDataSetName = newDataSetName;
     }
 
