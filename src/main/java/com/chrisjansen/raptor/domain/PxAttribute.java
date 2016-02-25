@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "px_attribute")
 @XmlRootElement
 
-public class PxAttribute implements Serializable {
+public class PxAttribute<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id

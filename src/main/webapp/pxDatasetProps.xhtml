@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+  <!--<link href="../../css/jansen.css" rel="stylesheet" type="text/css" />-->
+  <title>ADM Editor</title>
+  <link href="css/jansen.css" rel="stylesheet" type="text/css" />
+</h:head>
+
+<h:body>
+
+  <h2>Abstract Data Model Editor</h2>
+
+
+  <h:form prependId="false" id="form">
+
+
+    <!--<p:graphicImage url="/images/rockLizard.jpeg"/>-->
+
+
+    <p:growl id="growl" sticky="false" showDetail="false"/>
+    <p:messages id="msgs" autoUpdate="true" closable="true" />
+
+    <p:menubar>
+
+      <p:submenu label="Wizards" icon="ui-icon-gear">
+        <p:menuitem value="Px Attribute" action="pxDatasetPropsList" icon="ui-icon-suitcase"/>
+        <p:menuitem value="Px Dataset Props" action="pxDatasetProps" icon="ui-icon-suitcase"/>
+      </p:submenu>
+
+      <p:submenu label="Help" icon="ui-icon-help">
+        <p:menuitem value="Contents" url="#" />
+        <p:submenu label="Search" icon="ui-icon-search">
+          <p:submenu label="Text">
+            <p:menuitem value="Workspace" url="#" />
+          </p:submenu>
+          <p:menuitem value="File" url="#" />
+        </p:submenu>
+      </p:submenu>
+
+    </p:menubar>
+
+    <br/>
+
+    <p:wizard flowListener="#{pxDatasetPropsController.resetNewDataSetName}">
+
+      <p:tab id="findRecords" title="Existing Px Dataset Prop Records" titleStyleClass="ui-widget">
+        <p:dataTable id="pxDatasetPropsDataTable" var="pxDatasetProps" value="#{pxDatasetPropsController.pxDatasetPropsList}" widgetVar="pxDatasetPropsTable"
+                     emptyMessage="No pxDatasetProps records found with given criteria" filteredValue="#{pxDatasetPropsController.filteredPxDatasetPropsList}"
+                     selection="#{pxDatasetPropsController.selectedPxDatasetProps}"
+                     rows="10"
+                     rowKey="#{pxDatasetProps.propId}"
+                     editable="true"
+                     paginator="true"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     rowsPerPageTemplate="5,10,15">
+          PxDatasetProps
+          <f:facet name="header">
+            <p:outputPanel>
+              <h:outputText value="Search all fields:" />
+              <p:inputText id="globalFilter" onkeyup="PF('pxDatasetPropsTable').filter()" style="width:180px" placeholder="Enter keyword"/>
+            </p:outputPanel>
+          </f:facet>
+
+          <p:ajax event="rowEdit" listener="#{pxDatasetPropsController.onRowEdit}" update=":form:msgs" />
+          <p:ajax event="rowEditCancel" listener="#{pxDatasetPropsController.onRowCancel}" update=":form:msgs" />
+
+          <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+
+          <p:column  headerText="ID" >
+            <h:outputText value="#{pxDatasetProps.propId}" style="width:96%"/>
+          </p:column>
+          <p:column  headerText="DataSet" >
+            <h:outputText value="#{pxDatasetPropsController.newDataSetName}" style="width:96%"/>
+          </p:column>
+          <p:column  headerText="PropertyName">
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{pxDatasetProps.propertyName}" /></f:facet>
+              <f:facet name="input"><p:inputText value="#{pxDatasetProps.propertyName}" style="width:96%" label="displayName"/></f:facet>
+            </p:cellEditor>
+          </p:column>
+          <p:column  headerText="PropertyValue" >
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{pxDatasetProps.propertyValue}" /></f:facet>
+              <f:facet name="input"><p:inputText value="#{pxDatasetProps.propertyValue}" style="width:96%" label="sourceName"/></f:facet>
+            </p:cellEditor>
+          </p:column>
+          <p:column  headerText="UpdateTime" >
+            <h:outputText value="#{pxDatasetProps.updateTime}" style="width:96%"/>
+          </p:column>
+          <p:column style="width:32px">
+            <p:rowEditor />
+          </p:column>
+          <f:facet name="footer">
+            <p:commandButton  value="Refresh attributes" icon="ui-icon-refresh" actionListener="#{pxDatasetPropsController.refreshList}" update=":form:pxDatasetPropsDataTable"/>
+            <p:commandButton  value="Save attributes" icon="ui-icon-disk" actionListener="#{pxDatasetPropsController.saveList}" update="growl :form:pxDatasetPropsDataTable"/>
+          </f:facet>
+
+        </p:dataTable>
+      </p:tab>
+
+
+
+
+      <p:tab id="editRecords" title="New PxDatasetProps Records" titleStyleClass="ui-widget">
+
+
+
+        <p:panel id="newDataSet" header="Please enter a new DataSet name">
+          <h:panelGrid columns="3" cellpadding="5">
+            <p:outputLabel for="newDataSetName" value="New DataSet name:" />
+            <p:inputText id="newDataSetName" value="#{pxDatasetPropsController.newDataSetName}" label="Enter new value" required="true">
+              <f:validateRequired/>
+            </p:inputText>
+            <p:message for="newDataSetName" autoUpdate="true" closable="true" display="icon"/>
+          </h:panelGrid>
+          <p:commandButton value="Apply Value" update=":form:selectedPxDatasetPropsDataTable"/>
+        </p:panel>
+
+
+
+
+
+
+
+
+        <p:dataTable id="selectedPxDatasetPropsDataTable" var="selectedPxDatasetProps" value="#{pxDatasetPropsController.selectedPxDatasetProps}"
+                     emptyMessage="No pxDatasetProps records found with given criteria" editable="true" editMode="cell"
+                     rowKey="#{selectedPxDatasetProps.propertyName}-#{selectedPxDatasetProps.propertyValue}" selection="#{pxDatasetPropsController.selectedPxDatasetPropsForSoftDelete}">
+
+          <f:facet name="header">
+            New PxDatasetProp records to be persisted (cell editing is enabled)
+          </f:facet>
+          <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+
+          <p:column  headerText="ID" >
+            <h:outputText value="#{selectedPxDatasetProps.propId}" style="width:96%"/>
+          </p:column>
+          <p:column  headerText="New dataset" >
+            <h:outputText value="#{pxDatasetPropsController.newDataSetName}" style="width:96%"/>
+          </p:column>
+          <p:column  headerText="PropertyName">
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{selectedPxDatasetProps.propertyName}" /></f:facet>
+              <f:facet name="input"><p:inputText value="#{selectedPxDatasetProps.propertyName}" style="width:96%" label="propertyName"/></f:facet>
+            </p:cellEditor>
+          </p:column>
+          <p:column  headerText="PropertyValue" >
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{selectedPxDatasetProps.propertyValue}" /></f:facet>
+              <f:facet name="input"><p:inputText value="#{selectedPxDatasetProps.propertyValue}" style="width:96%" label="propertyValue"/></f:facet>
+            </p:cellEditor>
+          </p:column>
+          <p:column  headerText="UpdateTime" >
+            <h:outputText value="#{selectedPxDatasetProps.updateTime}" style="width:96%"/>
+          </p:column>
+          <f:facet name="footer">
+            <p:commandButton id="createButton" icon="ui-icon-plus"   value="Create new row" oncomplete="PF('createNewPxDatasetPropsDialogBox').show()" disabled="#{empty pxDatasetPropsController.newDataSetName}"/>
+            <p:commandButton  value="Delete selected" icon="ui-icon-close" actionListener="#{pxDatasetPropsController.doSoftDelete}" update="growl :form:selectedPxDatasetPropsDataTable" disabled="#{empty pxDatasetPropsController.newDataSetName}"/>
+            <p:commandButton  value="Save attributes" icon="ui-icon-disk" actionListener="#{pxDatasetPropsController.saveListAsNew}" update="growl :form:selectedPxDatasetPropsDataTable" disabled="#{empty pxDatasetPropsController.newDataSetName}"/>
+          </f:facet>
+        </p:dataTable>
+      </p:tab>
+
+    </p:wizard>
+
+    <p:dialog header="Create new Px Dataset Prop record" widgetVar="createNewPxDatasetPropsDialogBox" showEffect="fade" hideEffect="fade" resizable="false" modal="true">
+      <p:panel id="createPxDatasetProps" header="Create a new DataSetProps row.  Go ahead.  I dare you."  >
+        <p:messages id="msgs2" autoUpdate="true" closable="true" />
+        <h:panelGrid columns="3" cellpadding="5">
+          <p:outputLabel for="propertyName" value="Property name:" />
+          <p:inputText id="propertyName" value="#{pxDatasetPropsController.newPxDatasetProps.propertyName}"/>
+          <p:message for="propertyName" display="icon"/>
+
+          <p:outputLabel for="propertyValue" value="Property value:" />
+          <p:inputText id="propertyValue" value="#{pxDatasetPropsController.newPxDatasetProps.propertyValue}"/>
+          <p:message for="propertyValue" display="icon"/>
+
+          <p:outputLabel for="updateTime" value="Format:" />
+          <p:calendar id="updateTime" value="#{pxDatasetPropsController.newPxDatasetProps.updateTime}" showOn="updateTime"/>
+          <p:message for="updateTime" display="icon"/>
+
+        </h:panelGrid>
+
+        <p:commandButton value="Add record to table" icon="ui-icon-check"  update=":form:growl :form:selectedPxDatasetPropsDataTable"
+                         actionListener="#{pxDatasetPropsController.addToSelectedAttributeList}"/>
+        <p:commandButton value="Cancel" onclick="createNewPxDatasetPropsDialogBox.hide()"/>
+      </p:panel>
+    </p:dialog>
+
+  </h:form>
+</h:body>
+</html>

@@ -15,7 +15,6 @@ import java.util.List;
  * Created by Chris Jansen on 2/22/2016.
  */
 @Service
-@Component
 public class PxAttributeService {
 
     @Resource

@@ -6,35 +6,50 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
-  <h:head>
-    <!--<link href="../../css/jansen.css" rel="stylesheet" type="text/css" />-->
-    <link href="css/jansen.css" rel="stylesheet" type="text/css" />
-          </h:head>
+<h:head>
+  <!--<link href="../../css/jansen.css" rel="stylesheet" type="text/css" />-->
+  <title>ADM Editor</title>
+  <link href="css/jansen.css" rel="stylesheet" type="text/css" />
+</h:head>
+
+<h:body>
+
+  <h2>Abstract Data Model Editor</h2>
+
+
+  <h:form prependId="false" id="form">
+
+
+    <!--<p:graphicImage url="/images/rockLizard.jpeg"/>-->
+
+
+    <p:growl id="growl" sticky="false" showDetail="false"/>
+    <p:messages id="msgs" autoUpdate="true" closable="true" />
+
+    <p:menubar>
+
+      <p:submenu label="Wizards" icon="ui-icon-gear">
+        <p:menuitem value="Px Attribute" action="pxAttributeList" icon="ui-icon-suitcase"/>
+        <p:menuitem value="Px Dataset Props" action="pxDatasetProps" icon="ui-icon-suitcase"/>
+      </p:submenu>
+
+      <p:submenu label="Help" icon="ui-icon-help">
+        <p:menuitem value="Contents" url="#" />
+        <p:submenu label="Search" icon="ui-icon-search">
+          <p:submenu label="Text">
+            <p:menuitem value="Workspace" url="#" />
+          </p:submenu>
+          <p:menuitem value="File" url="#" />
+        </p:submenu>
+      </p:submenu>
+
+    </p:menubar>
+
+
+    <p:graphicImage url="/images/bigRaptor.jpeg"/>
 
 
 
-  <h:body>
-
-    <h:form prependId="false">
-      	This file illustrates PrimeFaces bug 6184 (see https://code.google.com/p/primefaces/issues/detail?id=6184).<br />
-      	<br />
-      	After clicking the button there should be two error messages behind the input field.<br />
-      	<ul>
-      	<li>Using the Client Side Validation, both error messages are displayed behind the input field.</li>
-      	<li>Using Server Side Validation, only one message is displayed. Unfortunately, the second message is an error message, but it is suppressed.</li>
-      	</ul>
-      	To activate server side validation, you have to set the parameter in de.beyondjava.main.Initializer (line 15) 
-      	and you have to remove the annotations of de.beyondjava.jsf.sample.searchExpressions.SmallNumberBean (lines 29 and 30).
-      	<br /><br />
-      <h:panelGrid columns="3">
-      	
-      	
-        <p:outputLabel for="@next" value="small number (less than 10)" />
-        <p:inputText value="#{backingJsfBean.smallNumber}" required="true" label="small number" id="smallNumberID"/>
-        <p:message for="@previous" />
-        <p:commandButton validateClient="true" value="validate!" action="#{backingJsfBean.showErrors}"
-          update="@parent:@parent" />
-      </h:panelGrid>
-    </h:form>
-  </h:body>
+  </h:form>
+</h:body>
 </html>

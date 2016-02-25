@@ -3,6 +3,8 @@ package com.chrisjansen.raptor.controller;
 import com.chrisjansen.raptor.domain.PxAttribute;
 import com.chrisjansen.raptor.service.PxAttributeService;
 import com.google.common.collect.Lists;
+import org.primefaces.event.FlowEvent;
+import org.primefaces.event.RowEditEvent;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.ManagedBean;
@@ -11,6 +13,7 @@ import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
@@ -24,17 +27,22 @@ import java.util.Locale;
  * Created by Chris Jansen on 2/22/2016.
  */
 @Component("pxAttributeController")
-@SessionScoped
+@ViewScoped
 public class PxAttributeController implements Serializable{
 
     @Resource
     private PxAttributeService pxAttributeService;
 
     private List<PxAttribute> pxAttributeList;
+
     private List<PxAttribute> filteredPxAttributeList;
     private List<PxAttribute>  selectedPxAttributes;
     private List<PxAttribute>  selectedPxAttributesForSoftDelete=new ArrayList<PxAttribute>();
+    private List<PxAttribute> editedExistingPxAttributes=new ArrayList<PxAttribute>();
+
     private PxAttribute newPxAttribute=new PxAttribute();
+
+
 
     private String newDataSetName;
 
@@ -42,6 +50,29 @@ public class PxAttributeController implements Serializable{
     public void init() {
         this.pxAttributeList= Lists.newArrayList(pxAttributeService.findAll());
     }
+
+
+    public void onRowCancel(RowEditEvent event){
+        PxAttribute editedPxAttribute=((PxAttribute) event.getObject());
+        editedExistingPxAttributes.remove(editedPxAttribute);
+
+        FacesMessage msg = new FacesMessage("PxAttribute Edit Removed", editedPxAttribute.getId().toString());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public void onRowEdit(RowEditEvent event){
+        PxAttribute editedPxAttribute=((PxAttribute) event.getObject());
+        editedExistingPxAttributes.add(editedPxAttribute);
+
+        FacesMessage msg = new FacesMessage("PxAttribute Edited", editedPxAttribute.getId().toString());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+
+    public String resetNewDataSetName(FlowEvent flowEvent){
+        this.newDataSetName=null;
+        return flowEvent.getNewStep();
+    }
+
 
     public void refreshList(ActionEvent actionEvent){
         init();
@@ -58,6 +89,14 @@ public class PxAttributeController implements Serializable{
         }
 
         return ((Comparable) value).compareTo(Integer.valueOf(filterText)) > 0;
+    }
+
+    public void saveList(ActionEvent actionEvent){
+        pxAttributeService.save(editedExistingPxAttributes);
+        editedExistingPxAttributes.clear();
+
+        FacesMessage msg = new FacesMessage("Editing PxAttributes are saved!", null);
+        FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
     public void saveListAsNew(ActionEvent actionEvent){
@@ -78,7 +117,7 @@ public class PxAttributeController implements Serializable{
 
 
     public void doSoftDelete(ActionEvent actionEvent){
-               selectedPxAttributes.removeAll(selectedPxAttributesForSoftDelete);
+        selectedPxAttributes.removeAll(selectedPxAttributesForSoftDelete);
         FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Records deleted from Table!",  null);
         FacesContext.getCurrentInstance().addMessage(null, message);
     }

@@ -8,10 +8,14 @@
 
 <h:head>
   <!--<link href="../../css/jansen.css" rel="stylesheet" type="text/css" />-->
+  <title>ADM Editor</title>
   <link href="css/jansen.css" rel="stylesheet" type="text/css" />
 </h:head>
 
 <h:body>
+
+  <h2>Abstract Data Model Editor</h2>
+
 
   <h:form prependId="false" id="form">
 
@@ -22,13 +26,36 @@
     <p:growl id="growl" sticky="false" showDetail="false"/>
     <p:messages id="msgs" autoUpdate="true" closable="true" />
 
-    <p:wizard>
-      <p:tab id="findRecords" title="Find PxAttributes">
+    <p:menubar>
+
+      <p:submenu label="Wizards" icon="ui-icon-gear">
+        <p:menuitem value="Px Attribute" action="pxAttributeList" icon="ui-icon-suitcase"/>
+        <p:menuitem value="Px Dataset Props" action="pxDatasetProps" icon="ui-icon-suitcase"/>
+      </p:submenu>
+
+      <p:submenu label="Help" icon="ui-icon-help">
+        <p:menuitem value="Contents" url="#" />
+        <p:submenu label="Search" icon="ui-icon-search">
+          <p:submenu label="Text">
+            <p:menuitem value="Workspace" url="#" />
+          </p:submenu>
+          <p:menuitem value="File" url="#" />
+        </p:submenu>
+      </p:submenu>
+
+    </p:menubar>
+
+    <br/>
+
+    <p:wizard flowListener="#{pxAttributeController.resetNewDataSetName}">
+
+      <p:tab id="findRecords" title="Existing PxAttribute Records" titleStyleClass="ui-widget">
         <p:dataTable id="pxAttrDataTable" var="pxAttr" value="#{pxAttributeController.pxAttributeList}" widgetVar="pxAttrTable"
                      emptyMessage="No pxAttribute records found with given criteria" filteredValue="#{pxAttributeController.filteredPxAttributeList}"
                      selection="#{pxAttributeController.selectedPxAttributes}"
                      rows="10"
                      rowKey="#{pxAttr.id}"
+                     editable="true"
                      paginator="true"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                      rowsPerPageTemplate="5,10,15">
@@ -40,42 +67,96 @@
             </p:outputPanel>
           </f:facet>
 
+          <p:ajax event="rowEdit" listener="#{pxAttributeController.onRowEdit}" update=":form:msgs" />
+          <p:ajax event="rowEditCancel" listener="#{pxAttributeController.onRowCancel}" update=":form:msgs" />
+
           <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
 
-          <p:column filterBy="#{pxAttr.id}" headerText="Id"  filterMatchMode="contains" sortBy="#{pxAttr.id}">
-            <h:outputText value="#{pxAttr.id}" />
+          <!-- Old way for TayTay -->
+
+          <!--<p:column filterBy="#{pxAttr.id}" headerText="Id"  filterMatchMode="contains" sortBy="#{pxAttr.id}">-->
+            <!--<h:outputText value="#{pxAttr.id}" />-->
+          <!--</p:column>-->
+          <!--<p:column filterBy="#{pxAttr.dataSet}" headerText="DataSet" filterMatchMode="contains" sortBy="#{pxAttr.dataSet}">-->
+            <!--<h:outputText value="#{pxAttr.dataSet}" />-->
+          <!--</p:column>-->
+          <!--<p:column filterBy="#{pxAttr.displayName}" headerText="DisplayName"  filterMatchMode="contains" sortBy="#{pxAttr.displayName}">-->
+            <!--<h:outputText value="#{pxAttr.displayName}" />-->
+          <!--</p:column>-->
+          <!--<p:column filterBy="#{pxAttr.sourceName}" headerText="SourceName"  filterMatchMode="contains" sortBy="#{pxAttr.sourceName}">-->
+            <!--<h:outputText value="#{pxAttr.sourceName}" />-->
+          <!--</p:column>-->
+          <!--<p:column filterBy="#{pxAttr.type}" headerText="Type"  filterMatchMode="contains" sortBy="#{pxAttr.type}">-->
+            <!--<h:outputText value="#{pxAttr.type}" />-->
+          <!--</p:column>-->
+
+          <!-- New way for TayTay -->
+
+          <p:column  headerText="ID" filterBy="#{pxAttr.id}" filterMatchMode="contains" sortBy="#{pxAttr.id}">
+            <h:outputText value="#{pxAttr.id}" style="width:96%"/>
           </p:column>
-          <p:column filterBy="#{pxAttr.dataSet}" headerText="DataSet" filterMatchMode="contains" sortBy="#{pxAttr.dataSet}">
-            <h:outputText value="#{pxAttr.dataSet}" />
+          <p:column  headerText="DataSet" filterBy="#{pxAttr.dataSet}" filterMatchMode="contains" sortBy="#{pxAttr.dataSet}">
+            <h:outputText value="#{pxAttr.dataSet}" style="width:96%"/>
           </p:column>
-          <p:column filterBy="#{pxAttr.displayName}" headerText="DisplayName"  filterMatchMode="contains" sortBy="#{pxAttr.displayName}">
-            <h:outputText value="#{pxAttr.displayName}" />
+          <p:column  headerText="DisplayName" filterBy="#{pxAttr.displayName}" filterMatchMode="contains" sortBy="#{pxAttr.displayName}">
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{pxAttr.displayName}" /></f:facet>
+              <f:facet name="input"><p:inputText value="#{pxAttr.displayName}" style="width:96%" label="displayName"/></f:facet>
+            </p:cellEditor>
           </p:column>
-          <p:column filterBy="#{pxAttr.sourceName}" headerText="SourceName"  filterMatchMode="contains" sortBy="#{pxAttr.sourceName}">
-            <h:outputText value="#{pxAttr.sourceName}" />
+          <p:column  headerText="SourceName" filterBy="#{pxAttr.sourceName}" filterMatchMode="contains" sortBy="#{pxAttr.sourceName}">
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{pxAttr.sourceName}" /></f:facet>
+              <f:facet name="input"><p:inputText value="#{pxAttr.sourceName}" style="width:96%" label="sourceName"/></f:facet>
+            </p:cellEditor>
           </p:column>
-          <p:column filterBy="#{pxAttr.type}" headerText="Type"  filterMatchMode="contains" sortBy="#{pxAttr.type}">
-            <h:outputText value="#{pxAttr.type}" />
+
+          <p:column  headerText="Type" filterBy="#{pxAttr.type}" filterMatchMode="in"  footerText="in" >
+
+            <f:facet name="filter">
+              <p:selectCheckboxMenu label="Types" onchange="PF('pxAttrTable').filter()" panelStyle="width:225px" scrollHeight="150">
+                <f:selectItems value="#{pxAttributeController.types}" />
+              </p:selectCheckboxMenu>
+            </f:facet>
+
+            <p:cellEditor>
+              <f:facet name="output"><h:outputText value="#{pxAttr.type}" /></f:facet>
+              <f:facet name="input">
+                <h:selectOneMenu value="#{pxAttr.type}" style="width:100%">
+                  <f:selectItems value="#{pxAttributeController.types}" var="type" itemLabel="#{type}" itemValue="#{type}" />
+                </h:selectOneMenu>
+              </f:facet>
+            </p:cellEditor>
+          </p:column>
+
+
+
+
+          <p:column style="width:32px">
+            <p:rowEditor />
           </p:column>
           <f:facet name="footer">
             <p:commandButton  value="Refresh attributes" icon="ui-icon-refresh" actionListener="#{pxAttributeController.refreshList}" update=":form:pxAttrDataTable"/>
+            <p:commandButton  value="Save attributes" icon="ui-icon-disk" actionListener="#{pxAttributeController.saveList}" update="growl :form:pxAttrDataTable"/>
           </f:facet>
+
         </p:dataTable>
       </p:tab>
 
 
 
 
-      <p:tab id="editRecords" title="Edit PxAttributes">
+      <p:tab id="editRecords" title="New PxAttribute Records" titleStyleClass="ui-widget">
 
 
 
         <p:panel id="newDataSet" header="Please enter a new DataSet name">
-          <h:panelGrid columns="2" cellpadding="5">
+          <h:panelGrid columns="3" cellpadding="5">
             <p:outputLabel for="newDataSetName" value="New DataSet name:" />
-            <p:inputText id="newDataSetName" value="#{pxAttributeController.newDataSetName}" label="Enter new value">
-              <!--<f:validateRequired/>-->
+            <p:inputText id="newDataSetName" value="#{pxAttributeController.newDataSetName}" label="Enter new value" required="true">
+              <f:validateRequired/>
             </p:inputText>
+            <p:message for="newDataSetName" autoUpdate="true" closable="true" display="icon"/>
           </h:panelGrid>
           <p:commandButton value="Apply Value" update=":form:selectedPxAttrDataTable"/>
         </p:panel>
@@ -92,7 +173,7 @@
                      rowKey="#{selectedPxAttribute.displayName}-#{selectedPxAttribute.sourceName}" selection="#{pxAttributeController.selectedPxAttributesForSoftDelete}">
 
           <f:facet name="header">
-            PxAttibute data to be persisted
+            New PxAttibute records to be persisted (cell editing is enabled)
           </f:facet>
           <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
 
@@ -133,9 +214,9 @@
             </p:cellEditor>
           </p:column>
           <f:facet name="footer">
-            <p:commandButton id="createButton" icon="ui-icon-plus"   value="Create new row" oncomplete="PF('createNewPxAttrDialogBox').show()"/>
-            <p:commandButton  value="Delete selected" icon="ui-icon-close" actionListener="#{pxAttributeController.doSoftDelete}" update="growl :form:selectedPxAttrDataTable"/>
-            <p:commandButton  value="Save attributes" icon="ui-icon-disk" actionListener="#{pxAttributeController.saveListAsNew}" update="growl :form:selectedPxAttrDataTable"/>
+            <p:commandButton id="createButton" icon="ui-icon-plus"   value="Create new row" oncomplete="PF('createNewPxAttrDialogBox').show()" disabled="#{empty pxAttributeController.newDataSetName}"/>
+            <p:commandButton  value="Delete selected" icon="ui-icon-close" actionListener="#{pxAttributeController.doSoftDelete}" update="growl :form:selectedPxAttrDataTable" disabled="#{empty pxAttributeController.newDataSetName}"/>
+            <p:commandButton  value="Save attributes" icon="ui-icon-disk" actionListener="#{pxAttributeController.saveListAsNew}" update="growl :form:selectedPxAttrDataTable" disabled="#{empty pxAttributeController.newDataSetName}"/>
           </f:facet>
         </p:dataTable>
       </p:tab>
